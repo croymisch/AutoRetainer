@@ -32,6 +32,7 @@ internal static unsafe class SchedulerMain
     internal static volatile bool CharacterPostProcessLocked = false;
     internal static ImmutableList<string> RetainerPostprocess = Array.Empty<string>().ToImmutableList();
     internal static ImmutableList<string> CharacterPostprocess = Array.Empty<string>().ToImmutableList();
+    private static bool RetainerProcessingStarted;
 
     internal static PluginEnableReason Reason { get; set; }
 
@@ -75,6 +76,7 @@ internal static unsafe class SchedulerMain
                             {
                                 if(EzThrottler.Throttle("ScheduleSelectRetainer", 2000))
                                 {
+                                    RetainerProcessingStarted = true;
                                     P.TaskManager.Enqueue(() => RetainerListHandlers.SelectRetainerByName(retainer));
 
                                     var adata = Utils.GetAdditionalData(Svc.ClientState.LocalContentId, ret.Name.ToString());
@@ -202,6 +204,17 @@ internal static unsafe class SchedulerMain
                             }
                             else
                             {
+                                if(retainer == null && RetainerProcessingStarted)
+                                {
+                                    RetainerProcessingStarted = false;
+                                    IPC.FireRetainerProcessingCompletedEvent();
+                                    if(IPC.Suppressed)
+                                    {
+                                        DebugLog("Retainer processing completion handled by another plugin; leaving retainer list open");
+                                        return;
+                                    }
+                                }
+
                                 if((C.Stay5 || MultiMode.Active) && !Utils.IsAllCurrentCharacterRetainersHaveMoreThan5Mins())
                                 {
                                     //nothing

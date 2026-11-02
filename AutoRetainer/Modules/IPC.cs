@@ -40,6 +40,7 @@ internal static class IPC
     private static void OnRetainerListCustomTask(string s)
     {
         P.RetainerListOverlay.PluginToProcess = s;
+        Log($"Retainer list custom task requested by {s}");
     }
 
     internal static void Shutdown()
@@ -188,6 +189,12 @@ internal static class IPC
     {
         Log($"Firing FireRetainerPostprocessEvent for {retainer} for plugin {pluginName}");
         Svc.PluginInterface.GetIpcProvider<string, string, object>(ApiConsts.OnRetainerReadyForPostprocess).SendMessage(pluginName, retainer);
+    }
+
+    internal static void FireRetainerProcessingCompletedEvent()
+    {
+        Log("Firing retainer processing completed event");
+        Svc.PluginInterface.GetIpcProvider<object>(ApiConsts.OnRetainerProcessingCompleted).SendMessage();
     }
 
     internal static void FireCharacterPostprocessTaskRequestEvent()

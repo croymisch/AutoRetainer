@@ -25,6 +25,7 @@
       <UseWindowsForms>true</UseWindowsForms>
       <OutputPath>bin/Release</OutputPath>
       <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+      <UserSecretsId>43facc38-33ad-4884-a04b-9cbd9d8c441e</UserSecretsId>
 	</PropertyGroup>
 
     <!--Import Project="_build\BuildExtensions.targets" /-->
@@ -39,6 +40,7 @@
         <ExcludeAssets>runtime;build;native;contentfiles;analyzers</ExcludeAssets>
         <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
 		<ProjectReference Include="..\NightmareUI.OtterGuiWrapper\NightmareUI.OtterGuiWrapper\NightmareUI.OtterGuiWrapper.csproj" />
 		<ProjectReference Include="..\NightmareUI\NightmareUI\NightmareUI.csproj" />
 		<ProjectReference Include="..\OtterGui\OtterGui.csproj" />

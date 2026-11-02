@@ -264,15 +264,18 @@ internal unsafe class RetainerListOverlay : Window
 
             PluginToProcess = null;
             Svc.PluginInterface.GetIpcProvider<object>(ApiConsts.OnRetainerListTaskButtonsDraw).SendMessage();
-            if(PluginToProcess != null)
+            var pluginToProcess = PluginToProcess;
+            if(pluginToProcess != null)
             {
+                var processedRetainers = 0;
                 for(var i = 0; i < GameRetainerManager.Count; i++)
                 {
                     var ret = GameRetainerManager.Retainers[i];
                     if(ret.Available)
                     {
                         P.TaskManager.Enqueue(() => RetainerListHandlers.SelectRetainerByName(ret.Name.ToString()));
-                        TaskPostprocessRetainerIPC.Enqueue(ret.Name.ToString(), PluginToProcess);
+                        TaskPostprocessRetainerIPC.Enqueue(ret.Name.ToString(), pluginToProcess);
+                        processedRetainers++;
 
                         if(C.RetainerMenuDelay > 0)
                         {
@@ -282,6 +285,7 @@ internal unsafe class RetainerListOverlay : Window
                         P.TaskManager.Enqueue(RetainerHandlers.ConfirmCantBuyback);
                     }
                 }
+
             }
         }
         height = ImGui.GetWindowSize().Y;
