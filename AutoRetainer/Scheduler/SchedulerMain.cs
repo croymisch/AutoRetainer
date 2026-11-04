@@ -207,7 +207,14 @@ internal static unsafe class SchedulerMain
                                 if(retainer == null && RetainerProcessingStarted)
                                 {
                                     RetainerProcessingStarted = false;
-                                    IPC.FireRetainerProcessingCompletedEvent();
+                                    if(!MultiMode.Active || Utils.IsAllCurrentCharacterRetainersHaveMoreThan5Mins())
+                                    {
+                                        IPC.FireRetainerProcessingCompletedEvent();
+                                    }
+                                    else
+                                    {
+                                        DebugLog("Retainer processing completion event deferred while MultiMode waits for another retainer");
+                                    }
                                     if(IPC.Suppressed)
                                     {
                                         DebugLog("Retainer processing completion handled by another plugin; leaving retainer list open");
